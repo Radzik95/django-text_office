@@ -34,7 +34,7 @@ def send_sms_callback(sms_id):
 
 
 @task()
-def send_sms_errback(task_id, sms_id):
+def send_sms_errback(task_id, exc, traceback, sms_id):
     sms = SMS.objects.get(pk=sms_id)
     sms.status = STATUS.failed
     sms.save(update_fields=['status'])
