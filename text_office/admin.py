@@ -16,12 +16,20 @@ class SMSAdmin(admin.ModelAdmin):
 
     list_filter = ['status', 'template']
     date_hierarchy = 'created'
-    search_fields = ['sender', 'recipient', 'get_recipient_name']
+    search_fields = ['sender', 'recipient']
 
     def get_queryset(self, request):
         return super(SMSAdmin, self).get_queryset(
             request
         ).select_related('template')
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, may_have_duplicates = super(SMSAdmin, self).get_search_results(
+            request, queryset, search_term,
+        )
+        queryset |= self.model.objects.filter(
+            context__icontains='{search_term}'.format(search_term=search_term))
+        return queryset, may_have_duplicates
 
     def get_recipient_name(self, obj):
         obj_context = obj.context
@@ -47,6 +55,7 @@ class SMSAdmin(admin.ModelAdmin):
             )
         )
 
+    get_recipient_name.short_description = _("Nazwa klienta")
     requeue.short_description = _('Requeue selected messages')
     send.short_description = _('Send selected messages')
 
