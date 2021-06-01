@@ -53,6 +53,7 @@ class SMSManager(models.Manager):
             message = Template(message).render(_context)
             sms = super(SMSManager, self).create(
                 status=status, message=message,
+                context=context,
                 *args, **kwargs
             )
         if priority == PRIORITY.now:
