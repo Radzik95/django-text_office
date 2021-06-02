@@ -46,14 +46,12 @@ class SMSManager(models.Manager):
             template = kwargs.pop('template', None)
             if template:
                 message = template.content
-                kwargs.pop('context', None)
             else:
                 message = kwargs.pop('message', '')
             _context = Context(context or {})
             message = Template(message).render(_context)
             sms = super(SMSManager, self).create(
                 status=status, message=message,
-                context=context,
                 *args, **kwargs
             )
         if priority == PRIORITY.now:
