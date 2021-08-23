@@ -43,7 +43,7 @@ class SMSManager(models.Manager):
         if render_on_delivery:
             sms = super(SMSManager, self).objects.create(*args, **kwargs)
         else:
-            template = kwargs.pop('template', None)
+            template = kwargs.get('template', None)
             if template:
                 message = template.content
             else:
