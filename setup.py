@@ -5,7 +5,7 @@ TESTS_REQUIRE = ['tox >= 2.3', 'celery >=3.1, <4.0']
 
 setup(
     name='django-text_office',
-    version='0.1.0',
+    version='0.1.1',
     author=u'Piotr Kaczyński',
     author_email='pkaczyns@gmail.com',
     packages=find_packages(),
