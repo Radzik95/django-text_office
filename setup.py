@@ -18,9 +18,8 @@ setup(
     include_package_data=True,
     package_data={'': ['README.rst']},
     install_requires=[
-        'django>=1.8', 'django-jsonfield>=1.0', 'django-sendsms',
+        'django>=1.8', 'jsonfield>=2.0,<2.1', 'django-sendsms',
         'six>=1.10', 'django-phonenumber-field>=1.1',
-        'django-jsonfield >= 1.0, < 1.1'
     ],
     classifiers=[
         'Development Status :: 1 - Planning',
