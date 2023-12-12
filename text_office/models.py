@@ -179,12 +179,12 @@ class SMS(models.Model):
                 status = STATUS.dispatched
                 if commit:
                     self.status = status
-                    self.save(update_fields=['status'])
+                    self.save(update_fields=['status', 'last_updated'])
                 relay.dispatch(self)
             else:
                 self.sms_message().send()
                 self.status = STATUS.sent
-                self.save(update_fields=['status'])
+                self.save(update_fields=['status', 'last_updated'])
 
         except EnvironmentError as e:
             errno, strerror = e.message
@@ -199,7 +199,7 @@ class SMS(models.Model):
                 exc_info=True
             )
             self.status = STATUS.failed
-            self.save(update_fields=['status'])
+            self.save(update_fields=['status', 'last_updated'])
 
         except Exception as e:
             logger.error(
@@ -209,7 +209,7 @@ class SMS(models.Model):
                 exc_info=True
             )
             self.status = STATUS.failed
-            self.save(update_fields=['status'])
+            self.save(update_fields=['status', 'last_updated'])
 
     def save(self, *args, **kwargs):
         self.full_clean()
