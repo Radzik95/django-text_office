@@ -44,11 +44,10 @@ class SMSManager(models.Manager):
         else:
             message = kwargs.pop('message', '')
             template = kwargs.get('template', None)
-            context = kwargs.pop('context', {})
+            context = kwargs.get('context', {})
             if not message and template:
-                message = template.content
                 _context = Context(context)
-                message = Template(message).render(_context)
+                message = Template(template.content).render(_context)
             sms = super(SMSManager, self).create(
                 status=status, message=message,
                 *args, **kwargs
@@ -132,12 +131,10 @@ class SMS(models.Model):
         depending on whether html_message is empty.
         """
 
-        if self.template is not None and self.context:
-            _context = Context(self.context)
+        message = self.message
+        if not message and self.template is not None:
+            _context = Context(self.context or {})
             message = Template(self.template.content).render(_context)
-
-        else:
-            message = self.message
 
         conf = getattr(settings, 'TEXT_OFFICE')
         backend_conf = conf['BACKENDS'].get(self.backend_alias or 'default')
