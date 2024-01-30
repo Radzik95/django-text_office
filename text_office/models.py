@@ -36,20 +36,19 @@ class SMSManager(models.Manager):
         kwargs.pop('status', None)
         priority = kwargs.get('priority', PRIORITY.medium)
         status = None if priority == PRIORITY.now else STATUS.queued
-        context = kwargs.get('context', '')
 
         # If email is to be rendered during delivery, save all necessary
         # information
         if render_on_delivery:
-            sms = super(SMSManager, self).objects.create(*args, **kwargs)
+            sms = super(SMSManager, self).create(*args, **kwargs)
         else:
+            message = kwargs.pop('message', '')
             template = kwargs.get('template', None)
-            if template:
+            context = kwargs.pop('context', {})
+            if not message and template:
                 message = template.content
-            else:
-                message = kwargs.pop('message', '')
-            _context = Context(context or {})
-            message = Template(message).render(_context)
+                _context = Context(context)
+                message = Template(message).render(_context)
             sms = super(SMSManager, self).create(
                 status=status, message=message,
                 *args, **kwargs
@@ -133,7 +132,7 @@ class SMS(models.Model):
         depending on whether html_message is empty.
         """
 
-        if self.template is not None:
+        if self.template is not None and self.context:
             _context = Context(self.context)
             message = Template(self.template.content).render(_context)
 
