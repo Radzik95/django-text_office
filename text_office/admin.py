@@ -12,7 +12,7 @@ from text_office.models import SMS, STATUS, SMSTemplate
 class SMSAdmin(admin.ModelAdmin):
 
     list_display = ('id', 'sender', 'recipient', 'template',
-                    'get_recipient_name', 'status', 'last_updated')
+                    'status', 'last_updated')
 
     list_filter = ['status', 'template']
     date_hierarchy = 'created'
@@ -22,16 +22,6 @@ class SMSAdmin(admin.ModelAdmin):
         return super(SMSAdmin, self).get_queryset(
             request
         ).select_related('template')
-
-    def get_recipient_name(self, obj):
-        obj_context = obj.context
-        if obj_context:
-            invoice = obj_context.get('invoice')
-            client_name = invoice.get('client_name', 'Nieznany')
-        else:
-            client_name = 'Nieznany'
-
-        return client_name
 
     def requeue(self, request, queryset):
         """An admin action to requeue messages."""
@@ -47,7 +37,6 @@ class SMSAdmin(admin.ModelAdmin):
             )
         )
 
-    get_recipient_name.short_description = _("Nazwa klienta")
     requeue.short_description = _('Requeue selected messages')
     send.short_description = _('Send selected messages')
 
