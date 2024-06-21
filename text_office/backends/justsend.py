@@ -45,9 +45,12 @@ class SmsBackend(object):
                     "from {sender}".format(
                     count=len(message.to), sender=sender
                 ))
+                to = message.to[0]
+                if to.startswith('+48'):
+                    to = to.split('+48')[1]
                 request_json = {
                     "from": sender,
-                    "to": message.to[0],
+                    "to": to,
                     "message": message.body,
                     "bulkVariant": self.bulk_variant
                 }
